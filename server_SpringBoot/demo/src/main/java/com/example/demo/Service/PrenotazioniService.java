@@ -37,14 +37,14 @@ public class PrenotazioniService {
 	//##########################################################################INSERIMENTI################################################################################
 	
 	// INSERIMENTO PRENOTAZIONE
-	public String save(PrenotazioniViewModel pvm1) 
+	public PrenotazioniViewModel save(PrenotazioniViewModel pvm1) 
 	{		
 		Prenotazioni p = prenotazioneConverter.fromViewModel(pvm1);
 		
 		try
 		{
 			Prenotazioni P = prenotazioniRepository.findById(p.getId_p()).get();
-			return "La prenotazione " + P.getId_p() + " e' gia presente!";
+			return null;
 		}
 		catch(NoSuchElementException e)
 		{
@@ -72,16 +72,15 @@ public class PrenotazioniService {
 				if(P.isEmpty())
 				{
 					p = prenotazioniRepository.save(p);
-					return "Prenotazione Inserita: " +  prenotazioneConverter.toViewModel(p);
+					return pvm1;
 				}
 				else
 				{
-					return "Per quell'orario il prenotabile è già stato prenotato da un altro utente!";
+					return null;
 				}
 			}
 			else
-				return "Si sta inserendo una prenotazione che non rispetta i vincoli orari e di data del prenotabile"
-						+ "...oppure precedenti la data odierna";
+				return null;
 		}
 	}
 	
@@ -135,19 +134,18 @@ public class PrenotazioniService {
 	//########################################################### CANCELLAZIONE ########################################################
 	
 	//CANCELLA SINGOLA PRENOTAZIONE
-	public String deletePrenotazione(PrenotazioniViewModel pvm)
+	public PrenotazioniViewModel deletePrenotazione(PrenotazioniViewModel pvm)
 	{
 		try
 		{
 			Prenotazioni prenotazioneDaEliminare = prenotazioneConverter.fromViewModel(pvm);
 			Prenotazioni P = prenotazioniRepository.PrenotazioneUtente(pvm.getUtente(),prenotazioneDaEliminare.getId_p());
 			prenotazioniRepository.deleteById(P.getId_p());
-			return "Prenotazione eliminata: " + prenotazioneConverter.toViewModel(P);			
+			return pvm;			
 		}
 		catch(NullPointerException e)
 		{
-			return "La prenotazione  #" +pvm.getId_p()+" non è fra quelle registrate dall'utente "
-					+ pvm.getUtente();
+			return null;
 		}			
 	}
 	

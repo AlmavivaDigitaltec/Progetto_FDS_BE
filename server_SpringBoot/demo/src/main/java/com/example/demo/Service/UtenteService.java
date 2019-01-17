@@ -25,19 +25,19 @@ public class UtenteService  {
 	UtenteConverter<Utente,UtenteViewModel> utenteConverter;
 	
 	//INSERIMENTO SINGOLO UTENTE
-	public String save(UtenteViewModel uvm1) {
+	public UtenteViewModel save(UtenteViewModel uvm1) {
 	
 		Utente u = utenteConverter.fromViewModel(uvm1);
 		
 		try
 		{
-			Utente U = utenteRepository.findById(u.getMatricola()).get();
-			U = utenteRepository.save(u);
-			return "Utente registrato: " + utenteConverter.toViewModel(U);
+			u = utenteRepository.findById(u.getMatricola()).get();
+			return null;
 		}
 		catch(NoSuchElementException e)
 		{
-			return "Esiste già un utente con matricola #" + u.getMatricola();
+			u = utenteRepository.save(u);
+			return utenteConverter.toViewModel(u);
 		}
 	}
 	
@@ -83,7 +83,7 @@ public class UtenteService  {
 	}
 	
 	//MODIFICA UTENTE (TUTTI I CAMPI POSSIBILI)
-	public String update(UtenteViewModel UVM) 
+	public UtenteViewModel update(UtenteViewModel UVM) 
 	{
 		Utente UtenteDaModificare = utenteConverter.fromViewModel(UVM);
 		
@@ -112,27 +112,27 @@ public class UtenteService  {
 			}
 				
 			Utente UtenteModificato = utenteRepository.save(UtentePresente);
-			return "Utente registrato: " + utenteConverter.toViewModel(UtenteModificato);
+			return UVM;
 		}
 		catch(NoSuchElementException e)
 		{
-			return "L'utente matricola #" + UtenteDaModificare.getMatricola() + " non è fra quelli registrati!";
+			return null;
 		}
 	}
 	
 	//CANCELLA UTENTE DA MATRICOLA
-	public String deleteByMatricola(UtenteViewModel UVM) {
+	public UtenteViewModel deleteByMatricola(UtenteViewModel UVM) {
 		
 		Utente UtenteDaEliminare  =  utenteConverter.fromViewModel(UVM);
 		
 		try
 		{
 			utenteRepository.deleteById(UtenteDaEliminare.getMatricola());
-			return  "Utente eliminato: " + UtenteDaEliminare;
+			return UVM;
 		}
 		catch(EmptyResultDataAccessException e)
 		{
-			return "L'utente da eliminare non è fra quelli registrati!";
+			return null;
 		}
 	}		
 }

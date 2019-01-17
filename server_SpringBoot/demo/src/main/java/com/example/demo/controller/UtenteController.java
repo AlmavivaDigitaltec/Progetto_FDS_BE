@@ -31,38 +31,38 @@ public class UtenteController {
 	//------------------------------------------GESTIONE DELL'UTENTE-----------------------------
 	
 	//ACCESSO**********************************************************************************************************
-	@PostMapping("/login{uvm}") //FUNZIONA
-	public UtenteViewModel login(@RequestBody UtenteViewModel uvm)
+	@GetMapping("/login/{mail}/{password}") //FUNZIONA
+	public UtenteViewModel login(@PathVariable String mail, @PathVariable String password)
 	{
-		return utenteService.findByMailAndPassword(uvm);
+		return utenteService.findByMailAndPassword(new UtenteViewModel("","","",mail,password));
 	}
 	
 	//INSERIMENTO******************************************************************************************************
-	@PostMapping("/inserisci/{uvm}")//FUNZIONA
-	public String insert(@RequestBody UtenteViewModel uvm) 
+	@PostMapping("/inserisci")//FUNZIONA
+	public UtenteViewModel insert(@RequestBody UtenteViewModel uvm) 
 	{
 		return utenteService.save(uvm);
 	}
 	
 	//MODIFICA******************************************************************************************************
-	@PutMapping("/modifica{uvm}") //FUNZIONA
-	public String modifica(@RequestBody UtenteViewModel uvm)
+	@PutMapping("/modifica") //FUNZIONA
+	public UtenteViewModel modifica(@RequestBody UtenteViewModel uvm)
 	{
 		return utenteService.update(uvm);
 	}
 	
 	//CANCELLAZIONE UTENTE DA MATRICOLA*****************************************************************************
-	@DeleteMapping("/cancellaUtenteMatricola{uvm}") //FUNZIONA
-	public String cancellaDaMatricola(@RequestBody UtenteViewModel uvm)
+	@DeleteMapping("/cancellaUtenteMatricola/{id}") //FUNZIONA
+	public UtenteViewModel cancellaDaMatricola(@PathVariable String id)
 	{
-		return utenteService.deleteByMatricola(uvm);
+		return utenteService.deleteByMatricola(new UtenteViewModel(id,"","","",""));
 	}
 	
 	//VISUALIZZAZIONI***********************************************************************************************
-	@GetMapping("/vediUtenteMatricola{uvm}") //FUNZIONA
-	public UtenteViewModel findUserByMatricola(UtenteViewModel uvm) 
+	@GetMapping("/vediUtenteMatricola/{id}") //FUNZIONA
+	public UtenteViewModel findUserByMatricola(@PathVariable String id) 
 	{
-		return utenteService.findById(uvm);
+		return utenteService.findById(new UtenteViewModel(id,"","","",""));
 	}
 	
 	//------------------------------------GESTIONE DEI PRENOTABILI-----------------------------
@@ -75,15 +75,15 @@ public class UtenteController {
 	
 	
 	//-------------------------------------GESTIONE DELLE PRENOTAZIONI------------------------
-	@DeleteMapping("/cancellaMiaPrenotazione")
-	public String DeleteMyPrenotation(PrenotazioniViewModel pvm)
+	@DeleteMapping("/cancellaMiaPrenotazione/{id}")
+	public PrenotazioniViewModel DeleteMyPrenotation(PrenotazioniViewModel pvm)
 	{
 		return prenotazioniService.deletePrenotazione(pvm);
 	}
 	
 	//INSERIMENTO
 	@PostMapping("/inserisciPrenotazione{pvm}") //FUNZIONA
-	String insert(@RequestBody PrenotazioniViewModel pvm)
+	public PrenotazioniViewModel insert(@RequestBody PrenotazioniViewModel pvm)
 	{
 		return prenotazioniService.save(pvm);
 	}

@@ -43,7 +43,7 @@ public class PrenotazioniService {
 		
 		try
 		{
-			Prenotazioni P = prenotazioniRepository.findById(p.getId_p()).get();
+			p = prenotazioniRepository.findById(p.getId_p()).get();
 			return null;
 		}
 		catch(NoSuchElementException e)
@@ -103,16 +103,16 @@ public class PrenotazioniService {
 		}
 
 	//RICERCA SINGOLA PRENOTAZIONE
-	public String findPrenotazione(PrenotazioniViewModel pvm) 
+	public PrenotazioniViewModel findPrenotazione(PrenotazioniViewModel pvm) 
 	{
 		try
 		{
 			Prenotazioni p = prenotazioniRepository.findById(pvm.getId_p()).get();
-			return "Prenotazione: " + prenotazioneConverter.toViewModel(p);
+			return prenotazioneConverter.toViewModel(p);
 		}
 		catch(NoSuchElementException e)
 		{
-			return "La prenotazione #" + pvm.getId_p() + " non è fra quelle presenti!";
+			return null;
 		}
 	}	
 	
@@ -159,7 +159,7 @@ public class PrenotazioniService {
 	//######################################################################### AGGIORNAMENTO #####################################################################à
 	
 	//AGGIORNA PRENOTAZIONE
-	public String updatePrenotazione(PrenotazioniViewModel PvM)
+	public PrenotazioniViewModel updatePrenotazione(PrenotazioniViewModel PvM)
 	{
 		/*VEDO SE LA PRENOTAZIONE DA MODIFICARE E' REALEMNTE PRESENTE NEL DB*/
 				
@@ -168,7 +168,6 @@ public class PrenotazioniService {
 			Prenotazioni PrenotazioneleDaModificare = prenotazioneConverter.fromViewModel(PvM);
 			
 			Prenotazioni PrenotazionePresente = prenotazioniRepository.PrenotazioneUtente(PvM.getUtente(),PvM.getId_p());
-			//Prenotazioni PrenotazionePresente = prenotazioniRepository.findById(PrenotazioneleDaModificare.getId_p()).get();
 			
 			//IN BASE AI CAMPI CHE SONO STATI INSERITI NELLA PRENOTAZIONE DA MODIFICARE..SI PROVVEDE A MODIFICARE QUELLO GIA' PRESENTE
 			// NEL DB
@@ -183,7 +182,7 @@ public class PrenotazioniService {
 			 */
 			
 						
-			if(PrenotazioneleDaModificare.getData_prenotazione() != null)
+			if(!PrenotazioneleDaModificare.getData_prenotazione().equals(PrenotazionePresente.getData_prenotazione()))
 			{
 				Date dataPMod = PrenotazioneleDaModificare.getData_prenotazione();
 				
@@ -197,11 +196,11 @@ public class PrenotazioniService {
 					PrenotazionePresente.setData_prenotazione(PrenotazioneleDaModificare.getData_prenotazione());
 				}
 				else
-					return "La data viola la prenotazione di un altro utente oppure i vincoli del prenotabile!";
+					return null;
 			}
 			
 			
-			if(PrenotazioneleDaModificare.getOra_inizio() != null)
+			if(!PrenotazioneleDaModificare.getOra_inizio().equals(PrenotazionePresente.getOra_inizio()))
 			{
 				Time OraInizioPMod = PrenotazioneleDaModificare.getOra_inizio();
 				
@@ -216,10 +215,10 @@ public class PrenotazioniService {
 					PrenotazionePresente.setOra_inizio(PrenotazioneleDaModificare.getOra_inizio());
 				}
 				else
-					return "L'ora inizio viola la prenotazione di un altro utente oppure i vincoli del prenotabile!";
+					return null;
 			}
 				
-			if(PrenotazioneleDaModificare.getOra_fine() != null)
+			if(!PrenotazioneleDaModificare.getOra_fine().equals(PrenotazionePresente.getOra_fine()))
 			{
 				Time OraFinePMod = PrenotazioneleDaModificare.getOra_fine();
 				
@@ -234,16 +233,16 @@ public class PrenotazioniService {
 					PrenotazionePresente.setOra_fine(PrenotazioneleDaModificare.getOra_fine());
 				}
 				else
-					return "L'ora fine viola la prenotazione di un altro utente oppure i vincoli del prenotabile!";
+					return null;
 			}
 			
 			Prenotazioni PrenotazioneModificata = prenotazioniRepository.save(PrenotazionePresente);
-			return "Prenotazione modificata: " + prenotazioneConverter.toViewModel(PrenotazioneModificata);
+			return prenotazioneConverter.toViewModel(PrenotazioneModificata);
 				
 		}
-		catch(NullPointerException e)
+		catch(NullPointerException e) //SE SI VUOLE MODIFICARE UNA PRENOTAZIONE CHE NON ESISTE
 		{
-			return "La prenotazione #" + PvM.getId_p() + " non è relativa all'utente #"+ PvM.getUtente();
+			return null;
 		}
 	}
 		

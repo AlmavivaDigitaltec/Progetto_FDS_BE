@@ -82,31 +82,32 @@ public class UtenteController {
 	}
 	
 	//INSERIMENTO
-	@PostMapping("/inserisciPrenotazione{pvm}") //FUNZIONA
+	@PostMapping("/inserisciPrenotazione") //FUNZIONA
 	public PrenotazioniViewModel insert(@RequestBody PrenotazioniViewModel pvm)
 	{
 		return prenotazioniService.save(pvm);
 	}
 	
 	//MODIFICA
-	@PutMapping("/modificaPrenotazione{pvm}") //FUNZIONA
-	String update(@RequestBody PrenotazioniViewModel pvm)
+	@PutMapping("/modificaPrenotazione") //FUNZIONA
+	public PrenotazioniViewModel update(@RequestBody PrenotazioniViewModel pvm)
 	{	
-		return prenotazioniService.updatePrenotazione(
-				new PrenotazioniViewModel("0001","203","",null,null,null));
+		return prenotazioniService.updatePrenotazione(pvm);
 	}
 	
 	//RICERCA LE PRENOTAZIONI DELL'UTENTE SPECIFICO
-	@GetMapping("/vediPrenotazioneUtente{uvm}") //FUNZIONA
-	List<PrenotazioniViewModel> getListaPrenotazioniUtente(UtenteViewModel uvm)
+	@GetMapping("/vediPrenotazioneUtente/{matricola}") //FUNZIONA
+	List<PrenotazioniViewModel> getListaPrenotazioniUtente(@PathVariable String matricola)
 	{
-		return prenotazioniService.getPrenotazioniUtente(uvm);
+		return prenotazioniService.getPrenotazioniUtente(
+				new UtenteViewModel(matricola,"","","",""));
 	}
 	
 	//RICERCA LA PRENOTAZIONE
-	@GetMapping("/vediPrenotazione{pvm}")//FUNZIONA
-	String search(PrenotazioniViewModel pvm)
+	@GetMapping("/vediPrenotazione/{id}")//FUNZIONA
+	public PrenotazioniViewModel search(@PathVariable String id)
 	{
-		return prenotazioniService.findPrenotazione(pvm);
+		return prenotazioniService.findPrenotazione(
+				new PrenotazioniViewModel(id,"","",null,null,null));
 	}
 }

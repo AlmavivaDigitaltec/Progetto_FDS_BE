@@ -44,6 +44,7 @@ public class UtenteService  {
 	//LISTA DI TUTTI GLI UTENTI REGISTRATI
 	public List<UtenteViewModel> findAll(){
 		 List<Utente> uList = utenteRepository.findAll();
+		 
 		 List<UtenteViewModel> uvmList = new ArrayList<UtenteViewModel>();
 		 for(Utente u : uList) {
 			 uvmList.add(utenteConverter.toViewModel(u));
@@ -55,15 +56,14 @@ public class UtenteService  {
 	//RICERCA SINGOLO UTENTE DALLA MATRICOLA
 	public UtenteViewModel findById(UtenteViewModel UVM) {
 		
-		//Utente U  =  utenteConverter.fromViewModel(UVM);
 		try
 		{
-			Utente U2 = utenteRepository.findById(UVM.getMatricola()).get();		
-			return utenteConverter.toViewModel(U2);
+			Utente U = utenteRepository.findById(UVM.getMatricola()).get();		
+			return utenteConverter.toViewModel(U);
 		} 
 		catch(NoSuchElementException e)
 		{
-			return new UtenteViewModel();
+			return null;
 		}
 	}
 	
@@ -73,8 +73,8 @@ public class UtenteService  {
 		try
 		{
 			Utente U  =  utenteConverter.fromViewModel(UVM);
-			Utente U2 = utenteRepository.findUtenteByEmailAndPassword(U.getMail(),U.getPassword());
-			return utenteConverter.toViewModel(U2);
+			U = utenteRepository.findUtenteByEmailAndPassword(U.getMail(),U.getPassword());
+			return utenteConverter.toViewModel(U);
 		}
 		catch(NullPointerException e)
 		{
@@ -91,28 +91,28 @@ public class UtenteService  {
 		{
 			Utente UtentePresente = utenteRepository.findById(UtenteDaModificare.getMatricola()).get();
 			
-			if(!UtenteDaModificare.getNome().isEmpty())
+			if(!UtenteDaModificare.getNome().equals(UtentePresente.getNome()))
 			{
 				UtentePresente.setNome(UtenteDaModificare.getNome());
 			}
 			
-			if(!UtenteDaModificare.getCognome().isEmpty())
+			if(!UtenteDaModificare.getCognome().equals(UtentePresente.getCognome()))
 			{
 				UtentePresente.setCognome(UtenteDaModificare.getCognome());
 			}
 				
-			if(!UtenteDaModificare.getMail().isEmpty())
+			if(!UtenteDaModificare.getMail().equals(UtentePresente.getMail()))
 			{
 				UtentePresente.setMail(UtenteDaModificare.getMail());
 			}
 			
-			if(!UtenteDaModificare.getPassword().isEmpty())
+			if(!UtenteDaModificare.getPassword().equals(UtentePresente.getPassword()))
 			{
 				UtentePresente.setPassword(UtenteDaModificare.getPassword());
 			}
 				
 			Utente UtenteModificato = utenteRepository.save(UtentePresente);
-			return UVM;
+			return utenteConverter.toViewModel(UtenteModificato);
 		}
 		catch(NoSuchElementException e)
 		{

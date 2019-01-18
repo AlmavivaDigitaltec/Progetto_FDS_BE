@@ -25,7 +25,7 @@ public class PrenotabiliService  {
 	PrenotabiliConverter<Prenotabili,PrenotabiliViewModel> prenotabiliConverter;
 	
 	//INSERIMENTO DEL PRENOTABILE
-	public String save(PrenotabiliViewModel uvm1) {
+	public PrenotabiliViewModel save(PrenotabiliViewModel uvm1) {
 		
 		Prenotabili PrenotabileDaInserire = prenotabiliConverter.fromViewModel(uvm1);
 	
@@ -33,11 +33,11 @@ public class PrenotabiliService  {
 		{		
 			PrenotabileDaInserire = prenotabiliRepository.findById(PrenotabileDaInserire.getCodice()).get();
 			PrenotabileDaInserire =  prenotabiliRepository.save(PrenotabileDaInserire);
-			return "Prenotabile inserito: " + prenotabiliConverter.toViewModel(PrenotabileDaInserire);
+			return prenotabiliConverter.toViewModel(PrenotabileDaInserire);
 		}
 		catch (NoSuchElementException e) 
 		{
-			return "Esiste gia' un prenotabile con il codice: " + PrenotabileDaInserire.getCodice();
+			return null;
 		}
 	}
 
@@ -60,7 +60,7 @@ public class PrenotabiliService  {
 	}
 	
 	//AGGIORNA PRENOTABILE
-	public String UpdatePrenotabile(PrenotabiliViewModel PvM)
+	public PrenotabiliViewModel UpdatePrenotabile(PrenotabiliViewModel PvM)
 	{
 		/*VEDO SE IL PRENOTABILE DA MODIFICARE E' REALEMNTE PRESENTE NEL DB*/
 		
@@ -76,57 +76,57 @@ public class PrenotabiliService  {
 			/*PER CAPIRE QUALI CAMPI DEL PRENOTABILE VOGLIO AGGIORNARE,VEDO QUALI,FRA QUELLI DEL PrenotabileDaModificare
 			 * NON SONO VUOTI E PROVVEDO AD USARE I LORO VALORI PER MODIFICARE L'EQUIVALENTE PRENOTABILE NEL DB
 			 */
-			if(PrenotabileDaModificare.getOrario_inizio() != null)
+			if(!PrenotabileDaModificare.getOrario_inizio().equals(PrenotabilePresente.getOrario_inizio()))
 			{
 				PrenotabilePresente.setOrario_inizio(PrenotabileDaModificare.getOrario_inizio());
 			}
 			
-			if(PrenotabileDaModificare.getOrario_fine() != null)
+			if(!PrenotabileDaModificare.getOrario_fine().equals(PrenotabilePresente.getOrario_fine()))
 			{
 				PrenotabilePresente.setOrario_fine(PrenotabileDaModificare.getOrario_fine());
 			}
 			
-			if(!PrenotabileDaModificare.getNome().isEmpty())
+			if(!PrenotabileDaModificare.getNome().equals(PrenotabilePresente.getNome()))
 			{
 				PrenotabilePresente.setNome(PrenotabileDaModificare.getNome());
 			}
 			
-			if(PrenotabileDaModificare.getData_inizio() != null)
+			if(PrenotabileDaModificare.getData_inizio().equals(PrenotabilePresente.getData_inizio()))
 			{
-				PrenotabilePresente.setOrario_inizio(PrenotabileDaModificare.getOrario_inizio());
+				PrenotabilePresente.setData_inizio(PrenotabileDaModificare.getData_inizio());
 			}
 			
-			if(PrenotabileDaModificare.getData_fine() != null)
+			if(PrenotabileDaModificare.getData_fine().equals(PrenotabilePresente.getData_fine()))
 			{
-				PrenotabilePresente.setOrario_fine(PrenotabileDaModificare.getOrario_fine());
+				PrenotabilePresente.setData_fine(PrenotabileDaModificare.getData_fine());
 			}
 			
-			if(!PrenotabileDaModificare.getCodice().isEmpty())
+			if(!PrenotabileDaModificare.getCodice().equals(PrenotabilePresente.getCodice()))
 			{
 				PrenotabilePresente.setCodice(PrenotabileDaModificare.getCodice());
 			}
 			
 			Prenotabili PrenotabileModificato = prenotabiliRepository.save(PrenotabilePresente);
-			return "Prenotabile modificato: " + prenotabiliConverter.toViewModel(PrenotabileModificato);
+			return prenotabiliConverter.toViewModel(PrenotabileModificato);
 			
 		}
 		catch(NoSuchElementException e)
 		{
-			return "Il prenotabile " + PrenotabileDaModificare.getCodice() +"da modificare non è fra quelli registrati";
+			return null;
 		}
 	}
 	
-	public String  DeletePrenotabili(PrenotabiliViewModel PvM)
+	public PrenotabiliViewModel  DeletePrenotabili(PrenotabiliViewModel PvM)
 	{
 		Prenotabili PrenotabileDaEliminare = prenotabiliConverter.fromViewModel(PvM);
 		try
 		{
 			prenotabiliRepository.deleteById(PrenotabileDaEliminare.getCodice());
-			return "Prenotabile Eliminato: " + PrenotabileDaEliminare;
+			return PvM;
 		}
 		catch(EmptyResultDataAccessException e)
 		{
-			return "Il prenotabile da eliminare non e' fra quelli registrati";
+			return null;
 		}
 	}
 	

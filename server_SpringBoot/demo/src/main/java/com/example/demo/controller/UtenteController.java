@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.view.PrenotabiliViewModel;
@@ -14,7 +15,7 @@ import com.example.demo.Service.PrenotazioniService;
 import com.example.demo.Service.UtenteService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4201")
 @RequestMapping("utente")
 public class UtenteController {
 	
@@ -32,9 +33,22 @@ public class UtenteController {
 	
 	//ACCESSO**********************************************************************************************************
 	@GetMapping("/login/{mail}/{password}") //FUNZIONA
-	public UtenteViewModel login(@PathVariable String mail, @PathVariable String password)
+	public ResponseEntity<UtenteViewModel> login(@PathVariable String mail, @PathVariable String password)
 	{
-		return utenteService.findByMailAndPassword(new UtenteViewModel("","","",mail,password));
+		UtenteViewModel U = utenteService.findByMailAndPassword(new UtenteViewModel("","","",mail,password));
+		
+		System.out.println(U);
+		
+		if(U != null)
+		{
+			System.out.println(ResponseEntity.ok(U));
+			return ResponseEntity.ok(U);
+		}
+		else
+		{
+			System.out.println(ResponseEntity.notFound().build());
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	//INSERIMENTO******************************************************************************************************

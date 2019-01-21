@@ -46,6 +46,7 @@ public class AdminController {
 	@DeleteMapping("/cancellaUtenteMatricola/{matricola}")//FUNZIONA
 	public UtenteViewModel cancellaDaMatricola(@PathVariable String matricola)
 	{
+		System.out.println(matricola);
 		return utenteService.deleteByMatricola(
 				new UtenteViewModel(matricola,"","","",""));
 	}

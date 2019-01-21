@@ -15,7 +15,7 @@ import com.example.demo.Service.PrenotazioniService;
 import com.example.demo.Service.UtenteService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4201")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("utente")
 public class UtenteController {
 	

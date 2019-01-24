@@ -66,9 +66,10 @@ public class UtenteController {
 	}
 	
 	//CANCELLAZIONE UTENTE DA MATRICOLA*****************************************************************************
-	@DeleteMapping("/cancellaUtenteMatricola/{id}") //FUNZIONA
+	@DeleteMapping(value="/cancellaUtenteMatricola/{id}") //FUNZIONA
 	public UtenteViewModel cancellaDaMatricola(@PathVariable String id)
 	{
+		//return utenteService.deleteByMatricola(uvm);
 		return utenteService.deleteByMatricola(new UtenteViewModel(id,"","","",""));
 	}
 	
